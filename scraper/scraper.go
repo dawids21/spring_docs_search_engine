@@ -10,11 +10,9 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-func main() {
+func getUrlsFromFile(fileName string) map[string]string {
 
-	fi, _ := os.Create("file.txt")
-
-	urlsFile, _ := os.Open("urls.txt")
+	urlsFile, _ := os.Open(fileName)
 
 	var text []string
 
@@ -26,13 +24,21 @@ func main() {
 		text = append(text, scanner.Text())
 	}
 
+	urls := make(map[string]string)
+
 	for _, s := range text {
 		sub := strings.Split(s, "|")
-
-		fmt.Println(strings.TrimSpace(sub[0]), strings.TrimSpace(sub[1]))
+		urls[sub[0]] = sub[1]
 	}
 
-	os.Exit(1)
+	return urls
+}
+
+func main() {
+
+	fi, _ := os.Create("file.txt")
+
+	urls := getUrlsFromFile("urls.txt")
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("docs.spring.io"),
