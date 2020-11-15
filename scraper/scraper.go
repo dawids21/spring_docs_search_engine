@@ -1,11 +1,10 @@
 package main
 
 import (
-	"os"
+	"fmt"
 	"time"
 
 	"github.com/gocolly/colly/v2"
-	"github.com/gocolly/colly/v2/queue"
 )
 
 func main() {
@@ -22,16 +21,9 @@ func main() {
 		DomainGlob:  "docs.spring.io/*",
 	})
 
-	q, err := queue.New(
-		4,
-		&queue.InMemoryQueueStorage{MaxSize: 1000},
-	)
+	c.OnHTML("a[href]", func(h *colly.HTMLElement) {
+		fmt.Println(h.Text)
+	})
 
-	if err != nil {
-		os.Exit(1)
-	}
-
-	q.AddURL(url)
-
-	q.Run(c)
+	c.Visit(url)
 }
