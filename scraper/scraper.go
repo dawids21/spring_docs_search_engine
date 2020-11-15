@@ -22,7 +22,8 @@ func main() {
 	})
 
 	c.OnHTML("a[href]", func(h *colly.HTMLElement) {
-		fmt.Println(h.Text)
+		link := h.Attr("href")
+		fmt.Printf("%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
 	})
 
 	c.Visit(url)
