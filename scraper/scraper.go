@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -10,6 +11,8 @@ import (
 func main() {
 
 	url := "https://docs.spring.io/spring-framework/docs/current/javadoc-api/allclasses-noframe.html"
+
+	fi, _ := os.Create("file.txt")
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("docs.spring.io"),
@@ -23,7 +26,7 @@ func main() {
 
 	c.OnHTML("a[href]", func(h *colly.HTMLElement) {
 		link := h.Attr("href")
-		fmt.Printf("%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
+		fmt.Fprintf(fi, "%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
 	})
 
 	c.Visit(url)
