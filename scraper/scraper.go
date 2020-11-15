@@ -1,9 +1,11 @@
 package main
 
 import (
+	"os"
 	"time"
 
 	"github.com/gocolly/colly/v2"
+	"github.com/gocolly/colly/v2/queue"
 )
 
 func main() {
@@ -20,4 +22,16 @@ func main() {
 		DomainGlob:  "docs.spring.io/*",
 	})
 
+	q, err := queue.New(
+		4,
+		&queue.InMemoryQueueStorage{MaxSize: 1000},
+	)
+
+	if err != nil {
+		os.Exit(1)
+	}
+
+	q.AddURL(url)
+
+	q.Run(c)
 }
