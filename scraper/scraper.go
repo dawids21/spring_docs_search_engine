@@ -1,18 +1,44 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gocolly/colly/v2"
 )
 
+func getUrlsFromFile(fileName string) map[string]string {
+
+	urlsFile, _ := os.Open(fileName)
+
+	var text []string
+
+	scanner := bufio.NewScanner(urlsFile)
+
+	scanner.Split(bufio.ScanLines)
+
+	for scanner.Scan() {
+		text = append(text, scanner.Text())
+	}
+
+	urls := make(map[string]string)
+
+	for _, s := range text {
+		sub := strings.Split(s, "|")
+		urls[sub[0]] = sub[1]
+	}
+
+	return urls
+}
+
 func main() {
 
-	url := "https://docs.spring.io/spring-framework/docs/current/javadoc-api/allclasses-noframe.html"
+	var fi *os.File
 
-	fi, _ := os.Create("file.txt")
+	urls := getUrlsFromFile("urls.txt")
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("docs.spring.io"),
@@ -29,5 +55,9 @@ func main() {
 		fmt.Fprintf(fi, "%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
 	})
 
-	c.Visit(url)
+	for name, url := range urls {
+		fi, _ = os.Create("classes_urls/" + name + ".txt")
+
+		c.Visit(url)
+	}
 }
