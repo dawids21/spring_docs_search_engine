@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -10,9 +12,27 @@ import (
 
 func main() {
 
-	url := "https://docs.spring.io/spring-framework/docs/current/javadoc-api/allclasses-noframe.html"
-
 	fi, _ := os.Create("file.txt")
+
+	urlsFile, _ := os.Open("urls.txt")
+
+	var text []string
+
+	scanner := bufio.NewScanner(urlsFile)
+
+	scanner.Split(bufio.ScanLines)
+
+	for scanner.Scan() {
+		text = append(text, scanner.Text())
+	}
+
+	for _, s := range text {
+		sub := strings.Split(s, "|")
+
+		fmt.Println(strings.TrimSpace(sub[0]), strings.TrimSpace(sub[1]))
+	}
+
+	os.Exit(1)
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("docs.spring.io"),
