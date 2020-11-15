@@ -28,7 +28,7 @@ func getUrlsFromFile(fileName string) map[string]string {
 
 	for _, s := range text {
 		sub := strings.Split(s, "|")
-		urls[sub[0]] = sub[1]
+		urls[strings.TrimSpace(sub[0])] = strings.TrimSpace(sub[1])
 	}
 
 	return urls
@@ -36,7 +36,7 @@ func getUrlsFromFile(fileName string) map[string]string {
 
 func main() {
 
-	fi, _ := os.Create("file.txt")
+	var fi *os.File
 
 	urls := getUrlsFromFile("urls.txt")
 
@@ -55,5 +55,9 @@ func main() {
 		fmt.Fprintf(fi, "%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
 	})
 
-	c.Visit(url)
+	for name, url := range urls {
+		fi, _ = os.Create("classes_urls/" + name + ".txt")
+
+		c.Visit(url)
+	}
 }
