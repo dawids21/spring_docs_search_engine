@@ -35,18 +35,9 @@ func getUrlsFromFile(fileName string) map[string]string {
 	return urls
 }
 
-func writeMapToSlice(original map[string]string) []string {
-	result := make([]string, 0)
-	for key, value := range original {
-		nextLine := fmt.Sprintf("%v=%v", key, value)
-		result = append(result, nextLine)
-	}
-	return result
-}
-
 func main() {
 
-	classesMap := make(map[string]string)
+	lines := make([]string, 0)
 
 	urls := getUrlsFromFile("urls.txt")
 
@@ -62,16 +53,16 @@ func main() {
 
 	c.OnHTML("a[href]", func(h *colly.HTMLElement) {
 		link := h.Attr("href")
-		classesMap[h.Text] = h.Request.AbsoluteURL(link)
+		nextLine := fmt.Sprintf("%v=%v", h.Text, h.Request.AbsoluteURL(link))
+		lines = append(lines, nextLine)
 	})
 
 	for name, url := range urls {
 		c.Visit(url)
 
-		if len(classesMap) != 0 {
+		if len(lines) != 0 {
 
 			fi, _ := os.Create("classes_urls/" + name + ".txt")
-			lines := writeMapToSlice(classesMap)
 			sort.Strings(lines)
 
 			for _, line := range lines {
