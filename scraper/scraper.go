@@ -36,7 +36,7 @@ func getUrlsFromFile(fileName string) map[string]string {
 
 func main() {
 
-	var fi *os.File
+	classesMap := make(map[string]string)
 
 	urls := getUrlsFromFile("urls.txt")
 
@@ -52,6 +52,7 @@ func main() {
 
 	c.OnHTML("a[href]", func(h *colly.HTMLElement) {
 		link := h.Attr("href")
+		classesMap[h.Text] = h.Request.AbsoluteURL(link)
 		fmt.Fprintf(fi, "%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
 	})
 
