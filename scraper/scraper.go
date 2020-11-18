@@ -34,6 +34,15 @@ func getUrlsFromFile(fileName string) map[string]string {
 	return urls
 }
 
+func writeMapToSlice(original map[string]string) []string {
+	result := make([]string, len(original))
+	for key, value := range original {
+		nextLine := fmt.Sprintf("%v=%v", key, value)
+		result = append(result, nextLine)
+	}
+	return result
+}
+
 func main() {
 
 	classesMap := make(map[string]string)
@@ -60,6 +69,8 @@ func main() {
 
 		if len(classesMap) != 0 {
 			fi, _ := os.Create("classes_urls/" + name + ".txt")
+
+			lines := writeMapToSlice(classesMap)
 
 			for class, link := range classesMap {
 				fmt.Fprintf(fi, "%v=%v\n", class, link)
