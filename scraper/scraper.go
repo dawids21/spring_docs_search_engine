@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -36,7 +37,7 @@ func getUrlsFromFile(fileName string) map[string]string {
 
 func main() {
 
-	var fi *os.File
+	lines := make([]string, 0)
 
 	urls := getUrlsFromFile("urls.txt")
 
@@ -52,12 +53,21 @@ func main() {
 
 	c.OnHTML("a[href]", func(h *colly.HTMLElement) {
 		link := h.Attr("href")
-		fmt.Fprintf(fi, "%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
+		nextLine := fmt.Sprintf("%v=%v", h.Text, h.Request.AbsoluteURL(link))
+		lines = append(lines, nextLine)
 	})
 
 	for name, url := range urls {
-		fi, _ = os.Create("classes_urls/" + name + ".txt")
-
 		c.Visit(url)
+
+		if len(lines) != 0 {
+
+			fi, _ := os.Create("classes_urls/" + name + ".txt")
+			sort.Strings(lines)
+
+			for _, line := range lines {
+				fmt.Fprintf(fi, "%v\n", line)
+			}
+		}
 	}
 }
