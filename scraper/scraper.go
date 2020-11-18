@@ -53,12 +53,17 @@ func main() {
 	c.OnHTML("a[href]", func(h *colly.HTMLElement) {
 		link := h.Attr("href")
 		classesMap[h.Text] = h.Request.AbsoluteURL(link)
-		fmt.Fprintf(fi, "%v=%v\n", h.Text, h.Request.AbsoluteURL(link))
 	})
 
 	for name, url := range urls {
-		fi, _ = os.Create("classes_urls/" + name + ".txt")
-
 		c.Visit(url)
+
+		if len(classesMap) != 0 {
+			fi, _ := os.Create("classes_urls/" + name + ".txt")
+
+			for class, link := range classesMap {
+				fmt.Fprintf(fi, "%v=%v\n", class, link)
+			}
+		}
 	}
 }
