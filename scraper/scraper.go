@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -35,7 +36,7 @@ func getUrlsFromFile(fileName string) map[string]string {
 }
 
 func writeMapToSlice(original map[string]string) []string {
-	result := make([]string, len(original))
+	result := make([]string, 0)
 	for key, value := range original {
 		nextLine := fmt.Sprintf("%v=%v", key, value)
 		result = append(result, nextLine)
@@ -68,12 +69,13 @@ func main() {
 		c.Visit(url)
 
 		if len(classesMap) != 0 {
+
 			fi, _ := os.Create("classes_urls/" + name + ".txt")
-
 			lines := writeMapToSlice(classesMap)
+			sort.Strings(lines)
 
-			for class, link := range classesMap {
-				fmt.Fprintf(fi, "%v=%v\n", class, link)
+			for _, line := range lines {
+				fmt.Fprintf(fi, "%v\n", line)
 			}
 		}
 	}
