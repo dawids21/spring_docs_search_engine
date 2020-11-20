@@ -58,9 +58,9 @@ func main() {
 	})
 
 	for name, url := range urls {
-		c.Visit(url)
+		err := c.Visit(url)
 
-		if len(lines) != 0 {
+		if err == nil {
 
 			fi, _ := os.Create("classes_urls/" + name + ".txt")
 			sort.Strings(lines)
@@ -68,6 +68,8 @@ func main() {
 			for _, line := range lines {
 				fmt.Fprintf(fi, "%v\n", line)
 			}
+		} else {
+			os.Exit(1)
 		}
 	}
 }
