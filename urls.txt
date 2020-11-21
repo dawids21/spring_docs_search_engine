@@ -1,2 +1,3 @@
 SpringFramework|https://docs.spring.io/spring-framework/docs/current/javadoc-api/allclasses-noframe.html
 SpringSecurity|https://docs.spring.io/spring-security/site/docs/current/api/allclasses-noframe.html
+SpringDataJPA|https://docs.spring.io/spring-data/jpa/docs/current/api/allclasses-noframe.html
