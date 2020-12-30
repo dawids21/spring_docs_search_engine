@@ -11,4 +11,4 @@ LINK=$(grep -oP "^$KEY=\K.+" $CLASSES_DIR/$PROJECT.txt)
 
 [[ -z $LINK ]] && exit
 
-qutebrowser $LINK
+$BROWSER $LINK
